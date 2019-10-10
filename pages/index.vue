@@ -1,41 +1,15 @@
 <template>
   <section class="section">
     <div class="columns is-mobile">
-      <card
-        title="Free"
-        icon="github-circle"
-      >
-        Open source on <a href="https://github.com/buefy/buefy">
-          GitHub
-        </a>
-      </card>
+      <div class="column">
+        <b-icon v-if="!url" icon="link" />
+        <img v-else :src="'https://res.cloudinary.com/skim/image/upload/h_32,w_32,d_default_link.png/monolink/favicons/'+url" alt="Site logo">
+        <b-input class="is-fullwidth" v-model="url" size="is-medium"></b-input>
 
-      <card
-        title="Responsive"
-        icon="cellphone-link"
-      >
-        <b class="has-text-grey">
-          Every
-        </b> component is responsive
-      </card>
-
-      <card
-        title="Modern"
-        icon="alert-decagram"
-      >
-        Built with <a href="https://vuejs.org/">
-          Vue.js
-        </a> and <a href="http://bulma.io/">
-          Bulma
-        </a>
-      </card>
-
-      <card
-        title="Lightweight"
-        icon="arrange-bring-to-front"
-      >
-        No other internal dependency
-      </card>
+        <div v-if="url">
+          Results here
+        </div>
+      </div>
     </div>
   </section>
 </template>
@@ -45,9 +19,14 @@ import Card from '~/components/Card'
 
 export default {
   name: 'HomePage',
-
   components: {
     Card
-  }
+  },
+  data() {
+    return {
+      url: "",
+      showResults: false,
+    }
+  },
 }
 </script>
