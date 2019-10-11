@@ -2,18 +2,18 @@
   <section class="section">
     <div class="columns is-mobile">
       <div class="column">
-        <b-field >
+        <b-field>
           <p class="control">
             <button class="button is-large favicon" disabled>
               <img v-if="!url" src="/url.png" />
               <img v-else :src="'https://res.cloudinary.com/skim/image/upload/h_32,w_32,d_default_link.png/monolink/favicons/'+domain" alt="Site logo">
             </button>
           </p>
-          <b-input expanded class="is-fullwidth" v-model="url" type="url" placeholder="https://" size="is-large"></b-input>
+          <b-input expanded class="is-fullwidth" v-model="url" @keyup.native.enter="getCategories" type="url" placeholder="https://" size="is-large"></b-input>
           <p class="control">
-            <nuxt-link class="button is-large is-dark" :to="'/?url='+url">
+            <button class="button is-large is-dark" @click="getCategories">
               Go &raquo;
-            </nuxt-link>
+            </button>
           </p>
         </b-field>
         <b-message v-if="error" type="is-danger" has-icon>
@@ -79,7 +79,7 @@ export default {
   },
   methods: {
     async getCategories() {
-      
+      this.$router.push('/?url='+this.url)
     }
   },
   async fetch({store, query}) {
