@@ -15,10 +15,15 @@
           </p>
         </b-field>
         <div v-if="categories">
-          Results here:
           <div class="card" v-for="result in categories" :key="result.score">
             <div class="card-content">
-              {{result.label}}
+              <nav class="breadcrumb has-arrow-separator" aria-label="breadcrumbs">
+                <ul>
+                  <li v-for="sub in result.label.split('/')" :key="sub" >
+                    <p v-if="sub.length">{{sub.toUpperCase()}}</p>
+                  </li>
+                </ul>
+              </nav>
               <b-progress :value="result.score*100" show-value format="percent"></b-progress>
             </div>
           </div>
@@ -63,16 +68,14 @@ export default {
   },
   methods: {
     async getCategories() {
-
+      
     }
   },
   async fetch({store, query}) {
-    console.log('asyncdata')
     store.commit('categories/emptyList')
     if(query.url) {
       await axios.get('http://localhost:3000/api/categories', {params: {url: query.url}})
         .then(function (res) {
-          console.log(res.data)
           store.commit('categories/add', res.data.result.categories)
         })
         .catch(function (error) {
@@ -88,5 +91,11 @@ export default {
 }
 .favicon img {
   border-radius: 3px;
+}
+li {
+  font-weight: 700;
+}
+li p {
+  padding: 0 0.65rem;
 }
 </style>
