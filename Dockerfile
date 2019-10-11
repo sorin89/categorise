@@ -1,6 +1,7 @@
 FROM node:latest
 
 # Set environment variables
+ENV API_URL=local-api-url
 ENV API_KEY=ibm-api-key-here
 ENV NODE_ENV=production
 # otherwise the app is unavailable to the host running Docker

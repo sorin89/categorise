@@ -9,6 +9,7 @@ const nlu = new NaturalLanguageUnderstandingV1({
 });
 
 app.get('/categories', (req, res) => {
+  //call IBM NLU api
   nlu.analyze(
     {
       url: req.query.url,
@@ -18,11 +19,9 @@ app.get('/categories', (req, res) => {
     })
     .then(response => {
       res.json(response);
-      //store.commit('categories/add', response.result.categories)
     })
     .catch(err => {
       res.json({error: err});
-      console.log('error: ', err);
     });
 })
 

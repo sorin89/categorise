@@ -11,11 +11,14 @@
           </p>
           <b-input expanded class="is-fullwidth" v-model="url" type="url" placeholder="https://" size="is-large"></b-input>
           <p class="control">
-            <nuxt-link class="button is-large is-primary" :to="'/?url='+url">
+            <nuxt-link class="button is-large is-dark" :to="'/?url='+url">
               Go &raquo;
             </nuxt-link>
           </p>
         </b-field>
+        <b-message v-if="error" type="is-danger" has-icon>
+          {{error}}
+        </b-message>
         <div v-if="categories">
           <div class="card" v-for="result in categories" :key="result.score">
             <div class="card-content">
@@ -52,11 +55,13 @@ export default {
     }
   },
   computed: {
+    //get domain from URL, using domain to get logo
     domain() {
       if(parseDomain(this.url)) {
         return parseDomain(this.url).domain+'.'+parseDomain(this.url).tld
       }
     },
+    //get categories from store
     categories() {
       if(this.$store.getters['categories/list'].length) {
         return this.$store.getters['categories/list']
@@ -65,6 +70,12 @@ export default {
         return null
       }
     },
+    //display error
+    error() {
+      if(this.$store.getters['categories/error']) {
+        return this.$store.getters['categories/error']
+      }
+    }
   },
   methods: {
     async getCategories() {
@@ -73,10 +84,19 @@ export default {
   },
   async fetch({store, query}) {
     store.commit('categories/emptyList')
+    store.commit('categories/emptyError')
+    //if the url param is present, call the api to get categories
     if(query.url) {
-      await axios.get('/api/categories', {params: {url: query.url}})
+      await axios.get((process.env.API_URL || process.env.apiUrl)+'/api/categories', {params: {url: query.url}})
         .then(function (res) {
-          store.commit('categories/add', res.data.result.categories)
+          //if error, save error to store
+          if(res.data.error) {
+            store.commit('categories/addError', res.data.error.message)
+          }
+          //else get categories and save them to store
+          else {
+            store.commit('categories/add', res.data.result.categories)
+          }
         })
         .catch(function (error) {
           console.log(error);
