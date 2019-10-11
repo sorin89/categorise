@@ -6,15 +6,10 @@
       aria-label="main navigation"
     >
       <div class="navbar-brand">
-        <a class="navbar-item" href="/">
-          Categorise
-        </a>
-
-        <div class="navbar-burger">
-          <span />
-          <span />
-          <span />
-        </div>
+        <nuxt-link class="navbar-item" to="/">
+        <img src="logo.svg" alt="" class="logo">
+          CATEGORISE
+        </nuxt-link>
       </div>
     </nav>
 
@@ -47,3 +42,16 @@ export default {
   }
 }
 </script>
+<style>
+  .navbar-brand {
+    width: 100%;
+  }
+  .navbar-item {
+    margin: 0 auto;
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+  .logo {
+    margin: 1rem;
+  }
+</style>

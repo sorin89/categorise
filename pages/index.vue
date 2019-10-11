@@ -11,7 +11,9 @@
           </p>
           <b-input expanded class="is-fullwidth" v-model="url" type="url" placeholder="https://" size="is-large"></b-input>
           <p class="control">
-            <nuxt-link class="button is-large is-primary" :to="'/?url='+url">Categorise</nuxt-link>
+            <nuxt-link class="button is-large is-primary" :to="'/?url='+url">
+              &raquo;
+            </nuxt-link>
           </p>
         </b-field>
         <div v-if="categories">
@@ -24,7 +26,7 @@
                   </li>
                 </ul>
               </nav>
-              <b-progress :value="result.score*100" show-value format="percent"></b-progress>
+              <b-progress :value="result.score*100" show-value format="percent" size="is-medium" type="is-success"></b-progress>
             </div>
           </div>
         </div>
@@ -46,9 +48,7 @@ export default {
   watchQuery: ['url'],
   data() {
     return {
-      url: this.$route.query.url,
-      showResults: false,
-      results: null
+      url: this.$route.query.url
     }
   },
   computed: {
@@ -88,6 +88,10 @@ export default {
 <style>
 .button[disabled] {
   opacity: unset;
+}
+.favicon {
+  padding: 0!important;
+  min-width:50px;
 }
 .favicon img {
   border-radius: 3px;
