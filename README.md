@@ -1,6 +1,7 @@
 # categorise
 
-> Demo app for Littledata
+> Demo app for Littledata.
+
 > Preview https://categorise.site
 
 ## Build Setup
