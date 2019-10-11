@@ -11,7 +11,7 @@
           </p>
           <b-input expanded class="is-fullwidth" v-model="url" type="url" placeholder="https://" size="is-large"></b-input>
           <p class="control">
-            <b-button class="button is-large is-primary" @click="getCategories">Categorise</b-button>
+            <nuxt-link class="button is-large is-primary" :to="'/?url='+url">Categorise</nuxt-link>
           </p>
         </b-field>
         <div v-if="categories">
@@ -66,30 +66,18 @@ export default {
 
     }
   },
-  async asyncData({store, query}) {
+  async fetch({store, query}) {
     console.log('asyncdata')
     store.commit('categories/emptyList')
     if(query.url) {
-      const NaturalLanguageUnderstandingV1 = require('ibm-watson/natural-language-understanding/v1');
-      const { IamAuthenticator } = require('ibm-watson/auth');
-      const nlu = new NaturalLanguageUnderstandingV1({
-        authenticator: new IamAuthenticator({ apikey: process.env.apiKey }),
-        version: '2019-07-12',
-        url: 'https://gateway-lon.watsonplatform.net/natural-language-understanding/api'
-      });
-      await nlu.analyze(
-        {
-          url: query.url,
-          features: {
-            categories: {}
-          }
+      await axios.get('http://localhost:3000/api/categories', {params: {url: query.url}})
+        .then(function (res) {
+          console.log(res.data)
+          store.commit('categories/add', res.data.result.categories)
         })
-        .then(response => {
-          store.commit('categories/add', response.result.categories)
+        .catch(function (error) {
+          console.log(error);
         })
-        .catch(err => {
-          console.log('error: ', err);
-        });
     }
   }
 }

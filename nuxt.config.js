@@ -61,6 +61,9 @@ export default {
   /*
   ** Build configuration
   */
+  serverMiddleware: [
+    '~/api/index.js'
+  ],
   build: {
     /*
     ** You can extend webpack config here
