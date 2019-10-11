@@ -4,14 +4,14 @@
       <div class="column">
         <b-field >
           <p class="control">
-            <button class="button is-medium" disabled>
-              <b-icon v-if="!url" icon="link" />
-              <img v-else :src="'https://res.cloudinary.com/skim/image/upload/h_32,w_32,d_default_link.png/monolink/favicons/'+url" alt="Site logo">
+            <button class="button is-large favicon" disabled>
+              <img v-if="!url" src="/url.png" />
+              <img v-else :src="'https://res.cloudinary.com/skim/image/upload/h_32,w_32,d_default_link.png/monolink/favicons/'+domain" alt="Site logo">
             </button>
           </p>
-          <b-input expanded class="is-fullwidth" v-model="url" size="is-medium"></b-input>
+          <b-input expanded class="is-fullwidth" v-model="url" type="url" placeholder="https://" size="is-large"></b-input>
           <p class="control">
-            <b-button class="button is-medium is-primary" @click="getCategories">Search</b-button>
+            <b-button class="button is-large is-primary" @click="getCategories">Categorise</b-button>
           </p>
         </b-field>
 
@@ -32,6 +32,7 @@
 <script>
 import Card from '~/components/Card'
 import axios from 'axios'
+import parseDomain from "parse-domain"
 
 export default {
   name: 'HomePage',
@@ -43,6 +44,13 @@ export default {
       url: "",
       showResults: false,
       results: null
+    }
+  },
+  computed: {
+    domain() {
+      if(parseDomain(this.url)) {
+        return parseDomain(this.url).domain+'.'+parseDomain(this.url).tld
+      }
     }
   },
   methods: {
@@ -66,3 +74,11 @@ export default {
   }
 }
 </script>
+<style>
+.button[disabled] {
+  opacity: unset;
+}
+.favicon img {
+  border-radius: 3px;
+}
+</style>
