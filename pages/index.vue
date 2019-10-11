@@ -12,7 +12,7 @@
           <b-input expanded class="is-fullwidth" v-model="url" type="url" placeholder="https://" size="is-large"></b-input>
           <p class="control">
             <nuxt-link class="button is-large is-primary" :to="'/?url='+url">
-              &raquo;
+              Go &raquo;
             </nuxt-link>
           </p>
         </b-field>
@@ -74,7 +74,7 @@ export default {
   async fetch({store, query}) {
     store.commit('categories/emptyList')
     if(query.url) {
-      await axios.get('http://localhost:3000/api/categories', {params: {url: query.url}})
+      await axios.get('/api/categories', {params: {url: query.url}})
         .then(function (res) {
           store.commit('categories/add', res.data.result.categories)
         })

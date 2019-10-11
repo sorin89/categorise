@@ -8,7 +8,7 @@
       <div class="navbar-brand">
         <nuxt-link class="navbar-item" to="/">
         <img src="logo.svg" alt="" class="logo">
-          CATEGORISE
+          CATEGORISE <span class="site">.SITE</span>
         </nuxt-link>
       </div>
     </nav>
@@ -26,18 +26,6 @@
 export default {
   data () {
     return {
-      items: [
-        {
-          title: 'Home',
-          icon: 'home',
-          to: { name: 'index' }
-        },
-        {
-          title: 'Inspire',
-          icon: 'lightbulb',
-          to: { name: 'inspire' }
-        }
-      ]
     }
   }
 }
@@ -53,5 +41,8 @@ export default {
   }
   .logo {
     margin: 1rem;
+  }
+  .site {
+    color: #c0c0c0;
   }
 </style>
