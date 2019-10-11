@@ -14,9 +14,6 @@
             <b-button class="button is-large is-primary" @click="getCategories">Categorise</b-button>
           </p>
         </b-field>
-
-
-
         <div v-if="categories">
           Results here:
           <div class="card" v-for="result in categories" :key="result.score">
@@ -41,7 +38,7 @@ export default {
   components: {
     Card
   },
-  watchQuery: true,
+  watchQuery: ['url'],
   data() {
     return {
       url: this.$route.query.url,
@@ -56,36 +53,44 @@ export default {
       }
     },
     categories() {
-      return this.$store.getters['categories/list'] || null
+      if(this.$store.getters['categories/list'].length) {
+        return this.$store.getters['categories/list']
+      }
+      else {
+        return null
+      }
     },
   },
   methods: {
-    async getCategories({$axios}) {
-      this.$router.go('/')
+    async getCategories() {
+
     }
   },
   async asyncData({store, query}) {
+    console.log('asyncdata')
     store.commit('categories/emptyList')
-    const NaturalLanguageUnderstandingV1 = require('ibm-watson/natural-language-understanding/v1');
-    const { IamAuthenticator } = require('ibm-watson/auth');
-    const nlu = new NaturalLanguageUnderstandingV1({
-      authenticator: new IamAuthenticator({ apikey: process.env.apiKey }),
-      version: '2019-07-12',
-      url: 'https://gateway-lon.watsonplatform.net/natural-language-understanding/api'
-    });
-    await nlu.analyze(
-      {
-        url: query.url,
-        features: {
-          categories: {}
-        }
-      })
-      .then(response => {
-        store.commit('categories/add', response.result.categories)
-      })
-      .catch(err => {
-        console.log('error: ', err);
+    if(query.url) {
+      const NaturalLanguageUnderstandingV1 = require('ibm-watson/natural-language-understanding/v1');
+      const { IamAuthenticator } = require('ibm-watson/auth');
+      const nlu = new NaturalLanguageUnderstandingV1({
+        authenticator: new IamAuthenticator({ apikey: process.env.apiKey }),
+        version: '2019-07-12',
+        url: 'https://gateway-lon.watsonplatform.net/natural-language-understanding/api'
       });
+      await nlu.analyze(
+        {
+          url: query.url,
+          features: {
+            categories: {}
+          }
+        })
+        .then(response => {
+          store.commit('categories/add', response.result.categories)
+        })
+        .catch(err => {
+          console.log('error: ', err);
+        });
+    }
   }
 }
 </script>
