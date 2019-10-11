@@ -15,9 +15,11 @@
           </p>
         </b-field>
 
-        <div v-if="showResults">
+
+
+        <div v-if="categories">
           Results here:
-          <div class="card" v-for="result in results" :key="result.score">
+          <div class="card" v-for="result in categories" :key="result.score">
             <div class="card-content">
               {{result.label}}
               <b-progress :value="result.score*100" show-value format="percent"></b-progress>
@@ -39,9 +41,10 @@ export default {
   components: {
     Card
   },
+  watchQuery: true,
   data() {
     return {
-      url: "",
+      url: this.$route.query.url,
       showResults: false,
       results: null
     }
@@ -51,26 +54,38 @@ export default {
       if(parseDomain(this.url)) {
         return parseDomain(this.url).domain+'.'+parseDomain(this.url).tld
       }
-    }
+    },
+    categories() {
+      return this.$store.getters['categories/list'] || null
+    },
   },
   methods: {
     async getCategories({$axios}) {
-      this.showResults = true;
-      this.results = [
-        {
-          "score": 0.946293,
-          "label": "/health and fitness"
-        },
-        {
-          "score": 0.935482,
-          "label": "/health and fitness/therapy"
-        },
-        {
-          "score": 0.885707,
-          "label": "/health and fitness/disease/cancer/brain tumor"
-        }
-      ];
+      this.$router.go('/')
     }
+  },
+  async asyncData({store, query}) {
+    store.commit('categories/emptyList')
+    const NaturalLanguageUnderstandingV1 = require('ibm-watson/natural-language-understanding/v1');
+    const { IamAuthenticator } = require('ibm-watson/auth');
+    const nlu = new NaturalLanguageUnderstandingV1({
+      authenticator: new IamAuthenticator({ apikey: process.env.apiKey }),
+      version: '2019-07-12',
+      url: 'https://gateway-lon.watsonplatform.net/natural-language-understanding/api'
+    });
+    await nlu.analyze(
+      {
+        url: query.url,
+        features: {
+          categories: {}
+        }
+      })
+      .then(response => {
+        store.commit('categories/add', response.result.categories)
+      })
+      .catch(err => {
+        console.log('error: ', err);
+      });
   }
 }
 </script>
